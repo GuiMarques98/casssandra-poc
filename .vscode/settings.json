@@ -1,0 +1,4 @@
+{
+    "dotenv.enableAutocloaking": false,
+    "editor.tabSize": 2
+}

@@ -1,0 +1,55 @@
+version: '3.5'
+
+services:
+  cassandra-seeder:
+    image: bitnami/cassandra:4.1.0
+    container_name: cassandra-seeder
+    environment:
+      # - CASSANDRA_CLUSTER_NAME=curia
+      - CASSANDRA_TRANSPORT_PORT_NUMBER=${CASSANDRA_TRANSPORT_PORT_NUMBER}
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_PASSWORD=${CASSANDRA_PASSWORD}
+      # - CASSANDRA_SEEDS=cassandra-seeder,cassandra-node-1
+    volumes:
+    - ./cassandra-persistence:/bitnami
+    ports:
+      - 9042:9042
+      - 7000:7000
+    networks:
+      - cassandra-networks
+    deploy:
+      labels:
+        STAGE: DATABASES
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+
+  # cassandra-nodes:
+  #   image: bitnami/cassandra:4.1.0
+  #   container_name: cassandra-node-1
+  #   environment:
+  #     - CASSANDRA_CLUSTER_NAME=curia-db
+  #     - CASSANDRA_TRANSPORT_PORT_NUMBER=${CASSANDRA_TRANSPORT_PORT_NUMBER}
+  #     - CASSANDRA_PASSWORD=${CASSANDRA_PASSWORD}
+  #     - CASSANDRA_SEEDS=cassandra-seeder,cassandra-node-1
+  #   volumes:
+  #     - ./cassandra-persistence:/bitnami
+  #   networks:
+  #     - cassandra-networks
+  #   deploy:
+  #     labels:
+  #       STAGE: DATABASES
+  #     restart_policy:
+  #       condition: on-failure
+  #       max_attempts: 5
+
+  # rabbit:
+  #   build:
+  #     context: ./
+  #   ports:
+  #       - 5672:5672
+  #       - 15672:15672
+
+networks:
+  cassandra-networks:
+    driver: bridge
